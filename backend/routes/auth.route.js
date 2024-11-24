@@ -82,6 +82,14 @@ router.post("/login", async (req, res) => {
   }
 });
 
-router.post("/logout", async (req, res) => {});
+router.post("/logout", async (req, res) => {
+  try {
+    res.cookie("token", "", { maxAge: 0 });
+    res.status(200).json({ message: "Loged out successfully" });
+  } catch (error) {
+    console.log("Error in Logout controller", error.message);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+});
 
 export { router as authRoutes };
