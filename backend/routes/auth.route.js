@@ -4,6 +4,7 @@ import bcryptjs from "bcryptjs";
 import { User } from "../models/user.model.js";
 import { generateToken } from "../lib/utils.js";
 import { protectRoute } from "../middleware/protectRoute.js";
+import cloudinary from "../lib/cloudinary.js";
 
 const router = Router();
 
@@ -93,10 +94,24 @@ router.post("/logout", async (req, res) => {
   }
 });
 
-router.use(protectRoute)
+router.use(protectRoute);
 
 router.put("/update-profile", async (req, res) => {
   try {
+    const { profilePic } = req.body;
+    const userId = req.user._id;
+
+    if (!profilePic)
+      return res.status(400).json({ message: "Profile pic required" });
+
+    const uploadResponse = await cloudinary.uploader.upload(profilePic);
+    const updatedUser = await User.findByIdAndUpdate(
+      userId,
+      { profilePic: uploadResponse.secure_url },
+      { new: true }
+    ); //secure_url is a field that cloudinary gives abck
+
+    res.status(200).json(updatedUser);
   } catch (error) {
     console.log("Error in update controller", error.message);
     res.status(500).json({ message: "Internal Server Error" });
