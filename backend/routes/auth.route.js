@@ -51,7 +51,37 @@ router.post("/signup", async (req, res) => {
   }
 });
 
-router.post("/login", async (req, res) => {});
+router.post("/login", async (req, res) => {
+  const { email, password } = req.body;
+
+  try {
+    const user = await User.findOne({ email });
+
+    if (!user) return res.status(404).json({ message: "Email not found" });
+
+    //if email existed
+    const comparePassword = await bcryptjs.compare(password, user.password);
+
+    if (!comparePassword)
+      return res
+        .status(400)
+        .json({ message: "Password didn't match our records" });
+
+    //if all the checks are passed
+    await generateToken(user._id, res);
+
+    res.status(200).json({
+      _id: user._id,
+      fullName: user.fullName,
+      email: user.email,
+      prefilePic: user.profilePic,
+    });
+  } catch (error) {
+    console.log("Error in Login controller", error.message);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+});
+
 router.post("/logout", async (req, res) => {});
 
 export { router as authRoutes };
