@@ -8,6 +8,8 @@ import ProfilePage from "./pages/ProfilePage";
 
 import { Loader } from "lucide-react"; // Importing a loader animation for when authentication check is in progress
 
+import { Toaster } from "react-hot-toast";
+
 import { useAuthStore } from "./store/useAuthStore"; // Custom hook to access authentication state
 import { useEffect } from "react";
 
@@ -31,48 +33,49 @@ const App = () => {
       </div>
     );
 
-    return (
-      <div>
-        {/* Display the Navbar at the top of all pages */}
-        <Navbar />
-        
-        {/* Routing setup */}
-        <Routes>
-          {/* Route for home page */}
-          {/* If user is authenticated, show HomePage; if not, redirect to the login page */}
-          <Route
-            path="/"
-            element={authUser ? <HomePage /> : <Navigate to={"/login"} />}
-          />
-          
-          {/* Route for the Sign-Up page */}
-          {/* If user is not authenticated, show SignUpPage; if already logged in, redirect to the home page */}
-          <Route
-            path="/signup"
-            element={!authUser ? <SignUpPage /> : <Navigate to={"/"} />}
-          />
-          
-          {/* Route for the Login page */}
-          {/* If user is not authenticated, show LoginPage; if already logged in, redirect to the home page */}
-          <Route
-            path="/login"
-            element={!authUser ? <LoginPage /> : <Navigate to={"/"} />}
-          />
-          
-          {/* Route for the Settings page */}
-          {/* Accessible to all users, regardless of authentication */}
-          <Route path="/settings" element={<SettingsPage />} />
-          
-          {/* Route for the Profile page */}
-          {/* If user is authenticated, show ProfilePage; if not, redirect to login */}
-          <Route
-            path="/profile"
-            element={authUser ? <ProfilePage /> : <Navigate to={"/login"} />}
-          />
-        </Routes>
-      </div>
-    );
-    
+  return (
+    <div>
+      {/* Display the Navbar at the top of all pages */}
+      <Navbar />
+
+      {/* Routing setup */}
+      <Routes>
+        {/* Route for home page */}
+        {/* If user is authenticated, show HomePage; if not, redirect to the login page */}
+        <Route
+          path="/"
+          element={authUser ? <HomePage /> : <Navigate to={"/login"} />}
+        />
+
+        {/* Route for the Sign-Up page */}
+        {/* If user is not authenticated, show SignUpPage; if already logged in, redirect to the home page */}
+        <Route
+          path="/signup"
+          element={!authUser ? <SignUpPage /> : <Navigate to={"/"} />}
+        />
+
+        {/* Route for the Login page */}
+        {/* If user is not authenticated, show LoginPage; if already logged in, redirect to the home page */}
+        <Route
+          path="/login"
+          element={!authUser ? <LoginPage /> : <Navigate to={"/"} />}
+        />
+
+        {/* Route for the Settings page */}
+        {/* Accessible to all users, regardless of authentication */}
+        <Route path="/settings" element={<SettingsPage />} />
+
+        {/* Route for the Profile page */}
+        {/* If user is authenticated, show ProfilePage; if not, redirect to login */}
+        <Route
+          path="/profile"
+          element={authUser ? <ProfilePage /> : <Navigate to={"/login"} />}
+        />
+      </Routes>
+
+      <Toaster />
+    </div>
+  );
 };
 
 export default App;
