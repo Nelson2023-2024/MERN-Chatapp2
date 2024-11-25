@@ -2,6 +2,7 @@ import { Router } from "express";
 import { protectRoute } from "../middleware/protectRoute.js";
 import { User } from "../models/user.model.js";
 import { Message } from "../models/message.model.js";
+import cloudinary from "../lib/cloudinary.js";
 
 const router = Router();
 
@@ -38,7 +39,7 @@ router.get("/:id", async (req, res) => {
       ],
     });
 
-    res.status(200).json(messages)
+    res.status(200).json(messages);
   } catch (error) {
     console.log(
       `Error in getMessagesForLogedInuserandReceiver controller`,
@@ -48,4 +49,40 @@ router.get("/:id", async (req, res) => {
   }
 });
 
+//message sent can either be text or image
+router.post("/send/:id", async (req, res) => {
+  try {
+    const { text, image } = req.body;
+
+    const { id: receiverId } = req.params;
+
+    const loggedInUserId = req.user._id;
+
+    //check if user is pasing an image or not
+    let imageUrl;
+
+    //if user sends us an image
+    if (image) {
+      //upload image to cloudinary
+      const uploadResponse = await cloudinary.uploader.upload(image);
+      imageUrl = uploadResponse.secure_url;
+    }
+
+    const newMessage = new Message({
+      senderId: loggedInUserId,
+      receiverId,
+      text,
+      Image: imageUrl,
+    });
+
+    await newMessage.save();
+
+    //socket.io goes here for real time functionality
+
+    res.status(201).json({ newMessage });
+  } catch (error) {
+    console.log(`Error in sendMessage controller`, error.message);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
 export { router as messageRoutes };
