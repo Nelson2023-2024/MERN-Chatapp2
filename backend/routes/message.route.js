@@ -2,7 +2,10 @@ import { Router } from "express";
 import { protectRoute } from "../middleware/protectRoute.js";
 import { User } from "../models/user.model.js";
 import { Message } from "../models/message.model.js";
+<<<<<<< HEAD
 import cloudinary from "../lib/cloudinary.js";
+=======
+>>>>>>> 9b86b199021c3ca7276f5470cee5c12204e1309a
 
 const router = Router();
 
@@ -39,7 +42,11 @@ router.get("/:id", async (req, res) => {
       ],
     });
 
+<<<<<<< HEAD
     res.status(200).json(messages);
+=======
+    res.status(200).json(messages)
+>>>>>>> 9b86b199021c3ca7276f5470cee5c12204e1309a
   } catch (error) {
     console.log(
       `Error in getMessagesForLogedInuserandReceiver controller`,
@@ -49,6 +56,7 @@ router.get("/:id", async (req, res) => {
   }
 });
 
+<<<<<<< HEAD
 //message sent can either be text or image
 router.post("/send/:id", async (req, res) => {
   try {
@@ -85,4 +93,6 @@ router.post("/send/:id", async (req, res) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 });
+=======
+>>>>>>> 9b86b199021c3ca7276f5470cee5c12204e1309a
 export { router as messageRoutes };
