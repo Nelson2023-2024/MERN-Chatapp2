@@ -10,7 +10,7 @@ configDotenv()
 const app = express();
 const PORT = process.env.PORT || 8000
 
-app.use(express.json())
+app.use(express.json({limit: "100mb"}))
 app.use(cookieParse())
 app.use(cors({
     origin: "http://localhost:5173",
