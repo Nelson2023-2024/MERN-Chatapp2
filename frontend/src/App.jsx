@@ -12,6 +12,7 @@ import { Toaster } from "react-hot-toast";
 
 import { useAuthStore } from "./store/useAuthStore"; // Custom hook to access authentication state
 import { useEffect } from "react";
+import { useThemeStore } from "./store/useThemeStore";
 
 const App = () => {
   // Destructure authUser, checkAuth, and isCheckingAuth from the auth store
@@ -24,6 +25,14 @@ const App = () => {
 
   console.log({ authUser }); // Log the current authUser for debugging
 
+  //themestore
+  const {theme} =useThemeStore()
+
+  // Synchronize theme with <html> element
+  useEffect(() => {
+    document.documentElement.setAttribute("data-theme", theme);
+  }, [theme]);
+
   // If we are in the process of checking authentication and authUser is not set yet
   if (isCheckingAuth && !authUser)
     return (
@@ -34,7 +43,7 @@ const App = () => {
     );
 
   return (
-    <div>
+    <div data-theme ={theme}>
       {/* Display the Navbar at the top of all pages */}
       <Navbar />
 
