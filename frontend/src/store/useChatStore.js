@@ -44,7 +44,8 @@ export const useChatStore = create((set, get) => ({
         messageData
       );
       if(response) toast.success("Sent successfully")
-      set({ messages: [...messages, response.data] });
+      const newMessage = response.data.newMessage
+      set({ messages: [...messages, newMessage] });
     } catch (error) {
       toast.error(error.response.data.message);
       toast.error("Error sending the message");
