@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useChatStore } from "../store/useChatStore";
 import ChatHeader from "./ChatHeader";
 import MessageImput from "./MessageImput";
@@ -12,11 +12,18 @@ const ChatContainer = () => {
 
   const { authUser } = useAuthStore();
 
+
   console.log(messages);
 
   useEffect(() => {
     getMessages(selectedUser._id); //get messages between us and selected user
   }, [selectedUser._id, getMessages]);
+
+  const lastMessageRef = useRef(null) // reference for the last message
+
+  useEffect(() =>{
+    if(messages.length > 0) lastMessageRef.current?.scrollIntoView({behavior: "smooth"})
+  },[messages])
   if (isMessagesLoading)
     return (
       <div className="flex-1 flex flex-col overflow-auto">
@@ -30,9 +37,10 @@ const ChatContainer = () => {
     <div className="flex-1 flex flex-col overflow-auto">
       <ChatHeader />
       <div className="flex-1 overflow-y-auto p-4 space-y-4">
-        {messages.map((message) => (
+        {messages.map((message,index) => (
           <div
             key={message._id}
+            ref={index === messages.length - 1 ? lastMessageRef : null}
             className={`chat ${
               message.senderId === authUser._id ? "chat-end" : "chat-start"
             }`}
