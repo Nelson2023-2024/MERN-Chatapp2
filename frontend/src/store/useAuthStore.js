@@ -102,19 +102,21 @@ export const useAuthStore = create((set, get) => ({
     //if the user is not autheniticated don't connect to the socket and if there is a connection don't connect again
     if (!authUser || get().socket?.connected) return;
 
-    const socket = io(BASE_URL);//backend URL
+    try {
+      const socket = io(BASE_URL); //backend URL
 
-    socket.on("connect", () => {
-      console.log("Socket connected", socket.id);
-      set({ socket });
-    });
-  
-    //if there is an error connecting to the socket log the below
-    socket.on("connect_error", (err) => {
-      console.error("Connection error:", err.message);
-    });
-  
-    socket.connect(); // Open the socket
+      socket.connect(); // Open the socket
+
+      set({ socket: socket });
+    } catch (error) {
+      console.log("Error connecting to socket", error.message);
+    }
   },
-  disconnectToSocket: () => {},
+  disconnectToSocket: () => {
+    //only disconnect only if we are connected
+    if (get().socket?.connected) {
+      get().socket.disconnect();
+      console.log("Disconnected from socket successfully");
+    }
+  },
 }));
