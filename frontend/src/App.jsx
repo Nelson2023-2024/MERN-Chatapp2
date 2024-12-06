@@ -16,8 +16,9 @@ import { useThemeStore } from "./store/useThemeStore";
 
 const App = () => {
   // Destructure authUser, checkAuth, and isCheckingAuth from the auth store
-  const { authUser, checkAuth, isCheckingAuth } = useAuthStore();
+  const { authUser, checkAuth, isCheckingAuth, onlineUsers } = useAuthStore();
 
+  console.log({onlineUsers})
   // Check authentication status when the component mounts
   useEffect(() => {
     checkAuth(); // This could verify if the user is logged in (check the token or session)
@@ -26,7 +27,7 @@ const App = () => {
   console.log({ authUser }); // Log the current authUser for debugging
 
   //themestore
-  const {theme} =useThemeStore()
+  const { theme } = useThemeStore();
 
   // Synchronize theme with <html> element
   useEffect(() => {
@@ -43,7 +44,7 @@ const App = () => {
     );
 
   return (
-    <div data-theme ={theme}>
+    <div data-theme={theme}>
       {/* Display the Navbar at the top of all pages */}
       <Navbar />
 
