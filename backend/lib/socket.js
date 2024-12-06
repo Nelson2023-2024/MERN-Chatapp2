@@ -12,4 +12,14 @@ const io = new Server(server, {
   },
 });
 
+//listen for incomming connections
+io.on("connection", (socket) => {
+  console.log("A user connected", socket.id);
+
+  //listen for disconnection when one disconnects
+  socket.on("disconnect", () => {
+    console.log("A user disconnected", socket.id);
+  });
+}); //when ever someone connects the callback runs socket parameter is the user that just connected
+
 export { io, app, server };
