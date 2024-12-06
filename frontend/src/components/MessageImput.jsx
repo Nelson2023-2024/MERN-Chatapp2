@@ -1,11 +1,13 @@
 import { useRef, useState } from "react";
-import { Image, Send, X } from "lucide-react";
+import { Image, Send, X, Smile } from "lucide-react";
 import { useChatStore } from "../store/useChatStore";
 import toast from "react-hot-toast";
+import EmojiPicker from "emoji-picker-react";
 
 const MessageImput = () => {
   const [text, setText] = useState("");
   const [imagePreview, setImagePreview] = useState(null);
+  const [isEmojiPickerOpen, setIsEmojiPickerOpen] = useState(false);
   const fileInputRef = useRef(null);
 
   const { sendMessage } = useChatStore();
@@ -56,6 +58,17 @@ const MessageImput = () => {
     }
   };
 
+  // toggleEmojiPicker
+  const toggleEmojiPicker = () => {
+    setIsEmojiPickerOpen((prev) => !prev);
+  };
+
+  const handleEmojiClick = (emojiData) => {
+    setText((prevText) => prevText + emojiData.emoji);
+    //keep the emoji picker open after selcting an image
+    setIsEmojiPickerOpen(true);
+  };
+
   return (
     <div className="p-4 w-full">
       {imagePreview && (
@@ -79,7 +92,21 @@ const MessageImput = () => {
       )}
 
       <form onSubmit={handlesendMessage} className="flex items-center gap-2">
-        <div className="flex-1 flex gap-2">
+        <div className="flex-1 flex gap-2 relative">
+          <button
+            type="button"
+            onClick={toggleEmojiPicker}
+            className="btn btn-circle btn-sm text-zinc-400 hover:text-emerald-500 relative top-2"
+          >
+            <Smile size={20} />
+          </button>
+
+          {isEmojiPickerOpen && (
+            <div className="absolute bottom-12 left-0 z-10">
+              <EmojiPicker onEmojiClick={handleEmojiClick} />
+              <X size={28} className="absolute right-0 top-0 cursor-pointer " onClick={toggleEmojiPicker}/>
+            </div>
+          )}
           <input
             type="text"
             className="w-full input input-bordered rounded-lg input-sm sm:input-md"
