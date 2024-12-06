@@ -3,6 +3,7 @@ import { protectRoute } from "../middleware/protectRoute.js";
 import { User } from "../models/user.model.js";
 import { Message } from "../models/message.model.js";
 import cloudinary from "../lib/cloudinary.js";
+import { getReceiverSockerId, io } from "../lib/socket.js";
 
 const router = Router();
 
@@ -78,6 +79,13 @@ router.post("/send/:id", async (req, res) => {
     await newMessage.save();
 
     //socket.io goes here for real time functionality
+    const receiverSocketId = getReceiverSockerId(receiverId)
+
+    //if the user is online send the message and even in real time
+    if(receiverSocketId){
+      //emit the message to that specific 
+      io.to(receiverSocketId).emit("newMessage",newMessage) 
+    }
 
     res.status(201).json({ newMessage });
   } catch (error) {

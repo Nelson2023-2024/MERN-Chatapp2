@@ -7,7 +7,7 @@ import { useAuthStore } from "../store/useAuthStore";
 import { formatMessageTime } from "../lib/utils";
 
 const ChatContainer = () => {
-  const { getMessages, messages, isMessagesLoading, selectedUser } =
+  const { getMessages, messages, isMessagesLoading, selectedUser, listenToIncomingMessages, unListenToIncomingMessages } =
     useChatStore();
 
   const { authUser } = useAuthStore();
@@ -17,7 +17,10 @@ const ChatContainer = () => {
 
   useEffect(() => {
     getMessages(selectedUser._id); //get messages between us and selected user
-  }, [selectedUser._id, getMessages]);
+    listenToIncomingMessages()
+
+    return () => unListenToIncomingMessages()
+  }, [selectedUser._id, getMessages, listenToIncomingMessages, unListenToIncomingMessages]);
 
   const lastMessageRef = useRef(null) // reference for the last message
 
