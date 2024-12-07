@@ -3,7 +3,8 @@ import { axiosInstance } from "../lib/axios";
 import toast from "react-hot-toast";
 import { io } from "socket.io-client";
 
-const BASE_URL = "http://localhost:8000";
+const BASE_URL =
+  import.meta.env.MODE === "development" ? "http://localhost:8000/api" : "/";
 
 //the object({}) is our inititial state
 export const useAuthStore = create((set, get) => ({
@@ -103,18 +104,20 @@ export const useAuthStore = create((set, get) => ({
     if (!authUser || get().socket?.connected) return;
 
     try {
-      const socket = io(BASE_URL,{query:{
-        userId : authUser._id
-      }}); //backend URL
+      const socket = io(BASE_URL, {
+        query: {
+          userId: authUser._id,
+        },
+      }); //backend URL
 
       socket.connect(); // Open the socket
 
       set({ socket: socket });
 
       //listen for onlineUser Updates
-      socket.on("getOnlineUsers", (userIds) =>{
-        set({onlineUsers: userIds}) //set onlineUsers with the ids we got
-      })
+      socket.on("getOnlineUsers", (userIds) => {
+        set({ onlineUsers: userIds }); //set onlineUsers with the ids we got
+      });
       //we are receiving the keys from userSocketMap{} which contain user ids from MongoDB
     } catch (error) {
       console.log("Error connecting to socket", error.message);

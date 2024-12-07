@@ -8,7 +8,10 @@ import { messageRoutes } from "../routes/message.route.js";
 import { app, server } from "../lib/socket.js";
 configDotenv();
 
+import path from "path";
+
 const PORT = process.env.PORT || 8000;
+const __dirname = path.resolve();
 
 app.use(express.json({ limit: "100mb" }));
 app.use(cookieParse());
@@ -21,6 +24,15 @@ app.use(
 
 app.use("/api/auth", authRoutes);
 app.use("/api/message", messageRoutes);
+
+//we are in production make the dist be our static assest
+if (process.env.NODE_ENV === "production") {
+  app.use(express.static(path.join(__dirname, "../frontend/dist")));
+
+  app.get("*", (req, res) => {
+    res.sendFile(path.join(__dirname, "..frontend", "dist", "indez.html"));
+  });
+}
 
 server.listen(PORT, () => {
   console.log(`Server is runing on http://localhost:${PORT}`);
