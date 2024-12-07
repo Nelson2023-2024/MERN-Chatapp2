@@ -62,6 +62,11 @@ export const useChatStore = create((set, get) => ({
     const socket = useAuthStore.getState().socket;
 
     socket.on("newMessage", (newMessage) => {
+      //fixing issue to ensure message is only sent to the selected user
+      const isMessageSentFromSelectedUser =
+        newMessage.senderId === selectedUser._id;
+
+      if (!isMessageSentFromSelectedUser) return;
       //keeping previous messages and adding a ne message
       set({
         messages: [...get().messages, newMessage],
