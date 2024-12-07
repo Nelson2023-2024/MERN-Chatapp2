@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Image, Send, X, Smile } from "lucide-react";
 import { useChatStore } from "../store/useChatStore";
 import toast from "react-hot-toast";
@@ -10,7 +10,12 @@ const MessageImput = () => {
   const [isEmojiPickerOpen, setIsEmojiPickerOpen] = useState(false);
   const fileInputRef = useRef(null);
 
-  const { sendMessage } = useChatStore();
+  const { sendMessage,selectedUser } = useChatStore();
+
+  useEffect(() =>{
+    //when ever a new chtat is selected the emoji picker is set to false
+    setIsEmojiPickerOpen(false)
+  },[selectedUser])
 
   const handleImageChange = (e) => {
     // get the files that user selected
